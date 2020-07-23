@@ -1,4 +1,4 @@
-import { RenderResult } from "../functions/render";
+import { RenderResult } from "../functions/render.js";
 
 export interface IShadow {
     readonly isShadowRootDescriptor: true;

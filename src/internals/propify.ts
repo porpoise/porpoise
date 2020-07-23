@@ -8,7 +8,7 @@ export function propify(element: HTMLElement, prop: string, value: any): void {
     }
 
     // Event handlers:
-    else if (prop.substring(0, 3) === "on" && typeof value === "function") {
+    else if (prop.startsWith("on") && typeof value === "function") {
         element.addEventListener(
             prop.replace("on", "").toLowerCase(),
             value

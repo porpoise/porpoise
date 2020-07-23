@@ -1,6 +1,6 @@
-import { RenderResult, render } from "../functions/render";
-import { shadow } from "../internals/shadow";
-import { propify } from "../internals/propify";
+import { RenderResult, render } from "../functions/render.js";
+import { shadow } from "../internals/shadow.js";
+import { propify } from "../internals/propify.js";
 
 type PropsType = Record<string, any> | null;
 

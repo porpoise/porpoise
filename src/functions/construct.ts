@@ -1,10 +1,9 @@
-import { IWebElementConfig } from "../internals/api";
-import { render } from "../functions/render";
+import { IWebElementConfig, ICustomElement } from "../internals/api.js";
+import { render } from "../functions/render.js";
 
 /* Construct a custom element: */
 export function construct(tagName: string, config: IWebElementConfig): void {
-
-    const Component = class extends HTMLElement {
+    const Component = class extends HTMLElement implements ICustomElement {
         static get observedAttributes() { return Object.keys(config.watch || Object.create(null)); }
 
         constructor() {
@@ -43,6 +42,12 @@ export function construct(tagName: string, config: IWebElementConfig): void {
         attributeChangedCallback(name: string, newValue: string, oldValue: string) {
             // Call watcher function for changed attribute:
             config.watch && config.watch[name].call(this, newValue, oldValue);
+        }
+
+        $(selector: string) {
+            const nodes = this.querySelectorAll(selector) || [];
+            if (nodes.length === 1) return nodes[0];
+            else return Array.from(nodes);
         }
     };
 

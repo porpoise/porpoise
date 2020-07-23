@@ -2,11 +2,14 @@
 export type RenderResult = any;
 
 export function render(child: RenderResult, parent: DocumentFragment | HTMLElement) {
+    // Recursive it
+    if (Array.isArray(child)) child.forEach(c => render(c, parent));
+
     // Already a Node:
-    if (child instanceof Node) {
+    else if (child instanceof Node) {
         parent.appendChild(child);
     }
-    // Otherwise resolve to TextNode:
+    // Otherwise resolve to Text Node:
     else {
         parent.appendChild(document.createTextNode(child.toString()));
     }

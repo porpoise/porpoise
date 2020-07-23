@@ -1,4 +1,8 @@
-import { RenderResult } from "../functions/render";
+import { RenderResult } from "../functions/render.js";
+
+export interface ICustomElement extends HTMLElement {
+    $(selector: string): Element | Element[];
+} 
 
 /* Type of a watcher function */
 export type WatcherCallback = (

@@ -1,11 +1,8 @@
-const { CheckerPlugin } = require("awesome-typescript-loader");
 const path = require("path");
-
 
 module.exports = {
     entry: {
-        "index": "./src/index.ts",
-        "index.min": "./src/index.ts",
+        "index": "./lib/esm/index.js",
     },
     output: {
         path: path.resolve(__dirname, "lib"),
@@ -15,16 +12,7 @@ module.exports = {
         umdNamedDefine: true,
     },
     resolve: {
-        extensions: [".ts", ".tsx", ".js"],
+        extensions: [".js"],
     },
-    devtool: "source-map",
-    module: {
-        rules: [{
-            test: /\.tsx?$/,
-            loader: "awesome-typescript-loader"
-        }]
-    },
-    plugins: [
-        new CheckerPlugin()
-    ]
+    devtool: "source-map"
 };
