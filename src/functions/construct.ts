@@ -2,9 +2,15 @@ import { IWebElementConfig, ICustomElement } from "../internals/api.js";
 import { render } from "../functions/render.js";
 
 /* Construct a custom element: */
-export function construct(tagName: string, config: IWebElementConfig): void {
-    const Component = class extends HTMLElement implements ICustomElement {
+export function construct<Store>(tagName: string, config: IWebElementConfig<Store>): void {
+
+    // Component Class 
+    const Component = class extends HTMLElement implements ICustomElement<Store> {
+        store: Store;
+
         static get observedAttributes() { return Object.keys(config.watch || Object.create(null)); }
+
+        get renderTarget() { return config.shadow ? (this.shadowRoot || this) : this; }
 
         constructor() {
             // Required super call.
@@ -13,6 +19,15 @@ export function construct(tagName: string, config: IWebElementConfig): void {
             // Call "created" lifecycle hook:
             config.created && config.created.call(this);
 
+            // Generate "store":
+            const unboundStore = config.store.call(this);
+            for (const prop in unboundStore) {
+                if (typeof unboundStore[prop] === "function") {
+                    unboundStore[prop] = (unboundStore[prop] as unknown as Function).bind(this);
+                }
+            }
+            this.store = unboundStore;
+
             // Register event handlers:
             if (config.events) {
                 for (const eventName in config.events) {
@@ -20,8 +35,19 @@ export function construct(tagName: string, config: IWebElementConfig): void {
                 }
             }
 
+            // Create shadow root if necessary:
+            config.shadow && this.attachShadow({ mode: "open" });
+
             // Append children:
-            config.render && render((config.render.bind(this))(), this);
+            config.render && render((config.render.bind(this))(), this.renderTarget);
+
+            // If Shadow DOM, then apply CSS:
+            if (config.css && config.shadow) {
+                const style = document.createElement("style");
+                style.textContent = typeof config.css === "string" ?
+                    config.css : config.css.call(this);
+                render(style, this.renderTarget);
+            }
         }
 
         connectedCallback() {
@@ -39,17 +65,24 @@ export function construct(tagName: string, config: IWebElementConfig): void {
             config.adopted && config.adopted.call(this);
         }
 
-        attributeChangedCallback(name: string, newValue: string, oldValue: string) {
+        attributeChangedCallback(name: string, oldValue: string, newValue: string) {
             // Call watcher function for changed attribute:
             config.watch && config.watch[name].call(this, newValue, oldValue);
         }
 
         $(selector: string) {
-            const nodes = this.querySelectorAll(selector) || [];
+            const nodes = this.renderTarget.querySelectorAll(selector) || [];
             if (nodes.length === 1) return nodes[0];
             else return Array.from(nodes);
         }
     };
+
+    // Add CSS to global DOM:
+    if (!config.shadow && config.css) {
+        const style = document.createElement("style");
+        style.textContent = config.css as string;
+        render(style, document.head);
+    }
 
     // Register element:
     customElements.define(tagName, Component);

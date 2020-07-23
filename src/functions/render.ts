@@ -1,7 +1,8 @@
 /* Return type of render function (children) */
 export type RenderResult = any;
+export type ValidParent = DocumentFragment | HTMLElement | ShadowRoot;
 
-export function render(child: RenderResult, parent: DocumentFragment | HTMLElement) {
+export function render(child: RenderResult, parent: ValidParent) {
     // Recursive it
     if (Array.isArray(child)) child.forEach(c => render(c, parent));
 

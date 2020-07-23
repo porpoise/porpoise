@@ -1,18 +1,11 @@
-import { RenderResult, render } from "../functions/render.js";
-import { shadow } from "../internals/shadow.js";
+import { RenderResult, render } from "./render.js";
 import { propify } from "../internals/propify.js";
 
 type PropsType = Record<string, any> | null;
 
 export function h(tagName: string, props: PropsType = null, ...children: RenderResult[]): RenderResult {
-    /* Shadow Root: */
-    if (tagName === "shadow") {
-        // Return synthetic container for shadow root:
-        return shadow(children);
-    }
-
     /* Document Fragment: */
-    else if (tagName === "fragment") {
+    if (tagName === "fragment") {
         // Initialize fragment:
         const fragment = document.createDocumentFragment();
 
@@ -28,6 +21,7 @@ export function h(tagName: string, props: PropsType = null, ...children: RenderR
 
         // Add properties:
         if (props) {
+            console.log(props);
             Object.keys(props).forEach(name => propify(element, name, props[name]));
         }
 
