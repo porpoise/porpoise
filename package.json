@@ -16,7 +16,9 @@
         "url": "https://github.com/raghav-misra/web-element/issues"
     },
     "scripts": {
-        "build": "tsc && webpack"
+        "build": "tsc && webpack",
+        "watch-bundle": "webpack --watch",
+        "watch-esm": "tsc --watch"
     },
     "homepage": "https://github.com/raghav-misra/web-element#readme",
     "devDependencies": {
