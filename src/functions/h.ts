@@ -30,3 +30,6 @@ export function h(tagName: string, props: PropsType = null, ...children: RenderR
         return element;
     }
 }
+
+import htm from "../internals/htm.js";
+export const html = htm.bind(h);
