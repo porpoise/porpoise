@@ -1,4 +1,5 @@
 import { RenderResult } from "../functions/render.js";
+import { CastableType } from "./createPropProxy.js";
 
 export interface ICustomElement<Store> extends HTMLElement {
     $(selector: string): Element | Element[];
@@ -22,6 +23,9 @@ export type EventHandler<Store, EventType extends Event = Event> = (
 export interface IWebElementConfig<Store> {
     /* Store */
     store: (this: ICustomElement<{}>) => Store;
+
+    /* Cast properties */
+    castedProps: Record<string, CastableType>;
 
 	/* Lifecycle hooks */
     created?(this: ICustomElement<Store>): void; // Called in "constructor" right after "super()".

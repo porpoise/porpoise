@@ -21,7 +21,6 @@ export function h(tagName: string, props: PropsType = null, ...children: RenderR
 
         // Add properties:
         if (props) {
-            console.log(props);
             Object.keys(props).forEach(name => propify(element, name, props[name]));
         }
 

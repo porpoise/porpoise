@@ -1,5 +1,6 @@
 import { IWebElementConfig, ICustomElement } from "../internals/api.js";
 import { render } from "../functions/render.js";
+import { PropProxy, createPropProxy, castValue } from "../internals/createPropProxy.js";
 
 /* Construct a custom element: */
 export function construct<Store>(tagName: string, config: IWebElementConfig<Store>): void {
@@ -7,6 +8,7 @@ export function construct<Store>(tagName: string, config: IWebElementConfig<Stor
     // Component Class 
     const Component = class extends HTMLElement implements ICustomElement<Store> {
         store: Store;
+        props: PropProxy;
 
         static get observedAttributes() { return Object.keys(config.watch || Object.create(null)); }
 
@@ -15,6 +17,9 @@ export function construct<Store>(tagName: string, config: IWebElementConfig<Stor
         constructor() {
             // Required super call.
             super();
+
+            // Attribute proxier:
+            this.props = createPropProxy(this, config.castedProps || {})
             
             // Call "created" lifecycle hook:
             config.created && config.created.call(this);
@@ -56,18 +61,21 @@ export function construct<Store>(tagName: string, config: IWebElementConfig<Stor
         }
 
         disconnectedCallback() {
-            // Call "mounted" lifecycle hook:
+            // Call "removed" lifecycle hook:
             config.removed && config.removed.call(this);
         }
 
         adoptedCallback() {
-            // Call "mounted" lifecycle hook:
+            // Call "adopted" lifecycle hook:
             config.adopted && config.adopted.call(this);
         }
 
         attributeChangedCallback(name: string, oldValue: string, newValue: string) {
             // Call watcher function for changed attribute:
-            config.watch && config.watch[name].call(this, newValue, oldValue);
+            config.watch && config.watch[name].call(this,
+                castValue(newValue, config.castedProps[name] || "string") as string,
+                castValue(oldValue, config.castedProps[name] || "string") as string,
+            );
         }
 
         $(selector: string) {
