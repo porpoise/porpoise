@@ -73,11 +73,11 @@ export function construct<Store>(tagName: string, config: IWebElementConfig<Stor
             config.adopted && config.adopted.call(this);
         }
 
-        attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+        attributeChangedCallback(prop: string, oldValue: string, newValue: string) {
             // Call watcher function for changed attribute:
-            config.watch && config.watch[name].call(this,
-                castValue(newValue, getTypeOfProp(name)) as string,
-                castValue(oldValue, getTypeOfProp(name)) as string,
+            config.watch && config.watch[prop].call(this,
+                castValue(this, prop, newValue, getTypeOfProp(prop)) as string,
+                castValue(this, prop, oldValue, getTypeOfProp(prop)) as string,
             );
         }
 
