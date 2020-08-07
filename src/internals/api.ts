@@ -1,5 +1,5 @@
 import { RenderResult } from "../functions/render.js";
-import { CastableType } from "./createPropProxy.js";
+import { CastableType } from "./prop-proxy.js";
 
 export interface ICustomElement<Store> extends HTMLElement {
     $(selector: string): Element | Element[];

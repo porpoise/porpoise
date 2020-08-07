@@ -1,6 +1,6 @@
 import { IWebElementConfig, ICustomElement } from "../internals/api.js";
 import { render } from "../functions/render.js";
-import { PropProxy, createPropProxy, castValue } from "../internals/createPropProxy.js";
+import { PropProxy, propProxy, castValue } from "../internals/prop-proxy.js";
 
 /* Construct a custom element: */
 export function construct<Store>(tagName: string, config: IWebElementConfig<Store>): void {
@@ -20,7 +20,7 @@ export function construct<Store>(tagName: string, config: IWebElementConfig<Stor
             super();
 
             // Attribute proxier:
-            this.props = createPropProxy(this, config.castedProps || {})
+            this.props = propProxy(this, config.castedProps || {})
             
             // Call "created" lifecycle hook:
             config.created && config.created.call(this);

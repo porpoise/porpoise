@@ -5,7 +5,7 @@ export type CastableType = "string" | "number" | "boolean" | "json";
 export type PropProxy = Record<string, PropType | JSONSerializable | undefined>;
 
 /* Wrap around DOM attribute manipulation */
-export function createPropProxy(element: HTMLElement, castedProps: Record<string, CastableType>) {
+export function propProxy(element: HTMLElement, castedProps: Record<string, CastableType>) {
     return new Proxy({}, {
         get(target, prop: string) {
             const rawValue = element.getAttribute(prop);
