@@ -4,10 +4,11 @@ import { PropProxy, createPropProxy, castValue } from "../internals/createPropPr
 
 /* Construct a custom element: */
 export function construct<Store>(tagName: string, config: IWebElementConfig<Store>): void {
+    const getTypeOfProp = (p: string) => (config.castedProps ? config.castedProps[p] : "string") || "string";
 
     // Component Class 
     const Component = class extends HTMLElement implements ICustomElement<Store> {
-        store: Store;
+        store?: Store;
         props: PropProxy;
 
         static get observedAttributes() { return Object.keys(config.watch || Object.create(null)); }
@@ -25,13 +26,15 @@ export function construct<Store>(tagName: string, config: IWebElementConfig<Stor
             config.created && config.created.call(this);
 
             // Generate "store":
-            const unboundStore = config.store.call(this);
-            for (const prop in unboundStore) {
-                if (typeof unboundStore[prop] === "function") {
-                    unboundStore[prop] = (unboundStore[prop] as unknown as Function).bind(this);
+            if (config.store) {
+                const unboundStore = config.store.call(this);
+                for (const prop in unboundStore) {
+                    if (typeof unboundStore[prop] === "function") {
+                        unboundStore[prop] = (unboundStore[prop] as unknown as Function).bind(this);
+                    }
                 }
+                this.store = unboundStore;
             }
-            this.store = unboundStore;
 
             // Register event handlers:
             if (config.events) {
@@ -73,8 +76,8 @@ export function construct<Store>(tagName: string, config: IWebElementConfig<Stor
         attributeChangedCallback(name: string, oldValue: string, newValue: string) {
             // Call watcher function for changed attribute:
             config.watch && config.watch[name].call(this,
-                castValue(newValue, config.castedProps[name] || "string") as string,
-                castValue(oldValue, config.castedProps[name] || "string") as string,
+                castValue(newValue, getTypeOfProp(name)) as string,
+                castValue(oldValue, getTypeOfProp(name)) as string,
             );
         }
 

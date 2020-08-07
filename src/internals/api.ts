@@ -3,7 +3,7 @@ import { CastableType } from "./createPropProxy.js";
 
 export interface ICustomElement<Store> extends HTMLElement {
     $(selector: string): Element | Element[];
-    store: Store
+    store?: Store
 } 
 
 /* Type of a watcher function */
@@ -22,10 +22,10 @@ export type EventHandler<Store, EventType extends Event = Event> = (
 /* Main configuration object */
 export interface IWebElementConfig<Store> {
     /* Store */
-    store: (this: ICustomElement<{}>) => Store;
+    store?: (this: ICustomElement<{}>) => Store;
 
     /* Cast properties */
-    castedProps: Record<string, CastableType>;
+    castedProps?: Record<string, CastableType>;
 
 	/* Lifecycle hooks */
     created?(this: ICustomElement<Store>): void; // Called in "constructor" right after "super()".
@@ -40,11 +40,11 @@ export interface IWebElementConfig<Store> {
     render?(this: ICustomElement<Store>): RenderResult;
 
 	/* Event handlers */
-    events: Record<string, EventHandler<Store>>;
+    events?: Record<string, EventHandler<Store>>;
     
     /* Mount shadow root */
     shadow?: boolean;
 
     /* Styling */
-    css: string | ((this: ICustomElement<Store>) => string);
+    css?: string | ((this: ICustomElement<Store>) => string);
 }
