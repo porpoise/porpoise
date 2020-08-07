@@ -1,5 +1,5 @@
-type PropType = string | number | boolean;
-type JSONPropType = Record<string, PropType> | PropType[];
+export type PropType = string | number | boolean;
+export type JSONPropType = Record<string, PropType> | PropType[];
 export type CastableType = "string" | "number" | "boolean" | "json";
 
 export type PropProxy = Record<string, PropType | JSONPropType | undefined>;

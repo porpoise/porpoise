@@ -1,5 +1,5 @@
 import { RenderResult } from "../functions/render.js";
-import { CastableType } from "./prop-proxy.js";
+import { CastableType, PropType, JSONPropType } from "./prop-proxy.js";
 
 export interface ICustomElement<Store> extends HTMLElement {
     $(selector: string): Element | Element[];
@@ -9,8 +9,8 @@ export interface ICustomElement<Store> extends HTMLElement {
 /* Type of a watcher function */
 export type WatcherCallback<Store> = (
 	this: ICustomElement<Store>,
-	newValue: string,
-	oldValue: string
+    newValue: (PropType | JSONPropType),
+    oldValue: (PropType | JSONPropType)
 ) => void;
 
 /* Type of an event handler */
