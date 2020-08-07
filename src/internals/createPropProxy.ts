@@ -4,6 +4,7 @@ export type CastableType = "string" | "number" | "boolean" | "json";
 
 export type PropProxy = Record<string, PropType | JSONSerializable | undefined>;
 
+/* Wrap around DOM attribute manipulation */
 export function createPropProxy(element: HTMLElement, castedProps: Record<string, CastableType>) {
     return new Proxy({}, {
         get(target, prop: string) {
@@ -31,6 +32,7 @@ export function createPropProxy(element: HTMLElement, castedProps: Record<string
     });
 }
 
+/* Cast to required type: */
 export function castValue(element: HTMLElement, prop: string, value: string, type: CastableType): PropType | JSONSerializable | undefined {
     let returnValue: PropType | JSONSerializable | undefined;
     switch (type) {
@@ -50,19 +52,26 @@ export function castValue(element: HTMLElement, prop: string, value: string, typ
     }
     return returnValue;
 }
+/* Serialize back to string */
+export function uncastValue(value: PropType | JSONSerializable): string {
+    if (typeof value === "object") return JSON.stringify(value);
+    else return value.toString();
+}
 
+/* Return a reactive object: */
 function proxiedJSONProp(element: HTMLElement, prop: string, raw: string): JSONSerializable | undefined {
     try {
-        let jsonObj = JSON.parse(raw);
-        return nestedPropertyProxy(jsonObj, () => element.setAttribute(prop, uncastValue(jsonObj)));
+        const jsonObj = JSON.parse(raw);
+        return nestedReactiveObject(jsonObj, () => element.setAttribute(prop, uncastValue(jsonObj)));
     }
     catch (e) { return undefined; }
 }
 
-function nestedPropertyProxy(data: JSONSerializable, callback: Function): JSONSerializable {
+/* Recursively make a object recursive deeply */
+function nestedReactiveObject(data: JSONSerializable, callback: Function): JSONSerializable {
     return new Proxy(data, {
         get(target: any, prop: string) {
-            if (typeof target[prop] === "object") return nestedPropertyProxy(target[prop], callback);
+            if (typeof target[prop] === "object") return nestedReactiveObject(target[prop], callback);
             else return target[prop];
         },
         set(target: any, prop: string, value: any) {
@@ -72,9 +81,4 @@ function nestedPropertyProxy(data: JSONSerializable, callback: Function): JSONSe
             return true;
         }
     })
-}
-
-export function uncastValue(value: PropType | JSONSerializable): string {
-    if (typeof value === "object") return JSON.stringify(value);
-    else return value.toString();
 }
