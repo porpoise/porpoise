@@ -1,8 +1,8 @@
 type PropType = string | number | boolean;
-type JSONSerializable = Record<string, PropType> | PropType[];
+type JSONPropType = Record<string, PropType> | PropType[];
 export type CastableType = "string" | "number" | "boolean" | "json";
 
-export type PropProxy = Record<string, PropType | JSONSerializable | undefined>;
+export type PropProxy = Record<string, PropType | JSONPropType | undefined>;
 
 /* Wrap around DOM attribute manipulation */
 export function propProxy(element: HTMLElement, castedProps: Record<string, CastableType>) {
@@ -20,7 +20,7 @@ export function propProxy(element: HTMLElement, castedProps: Record<string, Cast
             // Doesn't exist:
             else return undefined;
         },
-        set(target, prop: string, value: PropType | JSONSerializable) {
+        set(target, prop: string, value: PropType | JSONPropType) {
             if (castedProps[prop]) {
                 element.setAttribute(prop, uncastValue(value));
             }
@@ -33,8 +33,8 @@ export function propProxy(element: HTMLElement, castedProps: Record<string, Cast
 }
 
 /* Cast to required type: */
-export function castValue(element: HTMLElement, prop: string, value: string, type: CastableType): PropType | JSONSerializable | undefined {
-    let returnValue: PropType | JSONSerializable | undefined;
+export function castValue(element: HTMLElement, prop: string, value: string, type: CastableType): PropType | JSONPropType | undefined {
+    let returnValue: PropType | JSONPropType | undefined;
     switch (type) {
         case "string":
             returnValue = value;
@@ -53,13 +53,13 @@ export function castValue(element: HTMLElement, prop: string, value: string, typ
     return returnValue;
 }
 /* Serialize back to string */
-export function uncastValue(value: PropType | JSONSerializable): string {
+export function uncastValue(value: PropType | JSONPropType): string {
     if (typeof value === "object") return JSON.stringify(value);
     else return value.toString();
 }
 
 /* Return a reactive object: */
-function proxiedJSONProp(element: HTMLElement, prop: string, raw: string): JSONSerializable | undefined {
+function proxiedJSONProp(element: HTMLElement, prop: string, raw: string): JSONPropType | undefined {
     try {
         const jsonObj = JSON.parse(raw);
         return nestedReactiveObject(jsonObj, () => element.setAttribute(prop, uncastValue(jsonObj)));
@@ -68,7 +68,7 @@ function proxiedJSONProp(element: HTMLElement, prop: string, raw: string): JSONS
 }
 
 /* Recursively make a object recursive deeply */
-function nestedReactiveObject(data: JSONSerializable, callback: Function): JSONSerializable {
+function nestedReactiveObject(data: JSONPropType, callback: Function): JSONPropType {
     return new Proxy(data, {
         get(target: any, prop: string) {
             if (typeof target[prop] === "object") return nestedReactiveObject(target[prop], callback);
