@@ -1,4 +1,4 @@
-# UIModel
+# Porpoise
 
 A light, Vue-inspired abstraction layer over custom elements.
 
