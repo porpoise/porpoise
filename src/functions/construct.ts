@@ -1,100 +1,135 @@
-import { IWebElementConfig, ICustomElement } from "../internals/api.js";
+import { IPorpoiseConfig, ICustomElement } from "../internals/api.js";
 import { render } from "../functions/render.js";
 import { PropProxy, propProxy, castValue } from "../internals/prop-proxy.js";
 
 /* Construct a custom element: */
-export function construct<Store>(tagName: string, config: IWebElementConfig<Store>): void {
-    const getTypeOfProp = (p: string) => (config.castedProps ? config.castedProps[p] : "string") || "string";
+export function construct<Store>(
+			tagName: string,
+			config: IPorpoiseConfig<Store>
+		): void {
+			const getTypeOfProp = (p: string) =>
+				(config.castedProps ? config.castedProps[p] : "string") ||
+				"string";
 
-    // Component Class 
-    const Component = class extends HTMLElement implements ICustomElement<Store> {
-        store?: Store;
-        props: PropProxy;
+			// Component Class
+			const Component = class extends HTMLElement
+				implements ICustomElement<Store> {
+				store?: Store;
+				props: PropProxy;
 
-        static get observedAttributes() { return Object.keys(config.watch || Object.create(null)); }
+				static get observedAttributes() {
+					return Object.keys(config.watch || Object.create(null));
+				}
 
-        get renderTarget() { return config.shadow ? (this.shadowRoot || this) : this; }
+				get renderTarget() {
+					return config.shadow ? this.shadowRoot || this : this;
+				}
 
-        constructor() {
-            // Required super call.
-            super();
+				constructor() {
+					// Required super call.
+					super();
 
-            // Attribute proxier:
-            this.props = propProxy(this, config.castedProps || {})
-            
-            // Call "created" lifecycle hook:
-            config.created && config.created.call(this);
+					// Attribute proxier:
+					this.props = propProxy(this, config.castedProps || {});
 
-            // Generate "store":
-            if (config.store) {
-                const unboundStore = config.store.call(this);
-                for (const prop in unboundStore) {
-                    if (typeof unboundStore[prop] === "function") {
-                        unboundStore[prop] = (unboundStore[prop] as unknown as Function).bind(this);
-                    }
-                }
-                this.store = unboundStore;
-            }
+					// Call "created" lifecycle hook:
+					config.created && config.created.call(this);
 
-            // Register event handlers:
-            if (config.events) {
-                for (const eventName in config.events) {
-                    this.addEventListener(eventName, config.events[eventName].bind(this));
-                }
-            }
+					// Generate "store":
+					if (config.store) {
+						const unboundStore = config.store.call(this);
+						for (const prop in unboundStore) {
+							if (typeof unboundStore[prop] === "function") {
+								unboundStore[prop] = ((unboundStore[
+									prop
+								] as unknown) as Function).bind(this);
+							}
+						}
+						this.store = unboundStore;
+					}
 
-            // Create shadow root if necessary:
-            config.shadow && this.attachShadow({ mode: "open" });
+					// Register event handlers:
+					if (config.events) {
+						for (const eventName in config.events) {
+							this.addEventListener(
+								eventName,
+								config.events[eventName].bind(this)
+							);
+						}
+					}
 
-            // Append children:
-            config.render && render((config.render.bind(this))(), this.renderTarget);
+					// Create shadow root if necessary:
+					config.shadow && this.attachShadow({ mode: "open" });
 
-            // If Shadow DOM, then apply CSS:
-            if (config.css && config.shadow) {
-                const style = document.createElement("style");
-                style.textContent = typeof config.css === "string" ?
-                    config.css : config.css.call(this);
-                render(style, this.renderTarget);
-            }
-        }
+					// Append children:
+					config.render &&
+						render(config.render.bind(this)(), this.renderTarget);
 
-        connectedCallback() {
-            // Call "mounted" lifecycle hook:
-            config.mounted && config.mounted.call(this);
-        }
+					// If Shadow DOM, then apply CSS:
+					if (config.css && config.shadow) {
+						const style = document.createElement("style");
+						style.textContent =
+							typeof config.css === "string"
+								? config.css
+								: config.css.call(this);
+						render(style, this.renderTarget);
+					}
+				}
 
-        disconnectedCallback() {
-            // Call "removed" lifecycle hook:
-            config.removed && config.removed.call(this);
-        }
+				connectedCallback() {
+					// Call "mounted" lifecycle hook:
+					config.mounted && config.mounted.call(this);
+				}
 
-        adoptedCallback() {
-            // Call "adopted" lifecycle hook:
-            config.adopted && config.adopted.call(this);
-        }
+				disconnectedCallback() {
+					// Call "removed" lifecycle hook:
+					config.removed && config.removed.call(this);
+				}
 
-        attributeChangedCallback(prop: string, oldValue: string, newValue: string) {
-            // Call watcher function for changed attribute:
-            config.watch && config.watch[prop].call(this,
-                castValue(this, prop, newValue, getTypeOfProp(prop)) as string,
-                castValue(this, prop, oldValue, getTypeOfProp(prop)) as string,
-            );
-        }
+				adoptedCallback() {
+					// Call "adopted" lifecycle hook:
+					config.adopted && config.adopted.call(this);
+				}
 
-        $(selector: string) {
-            const nodes = this.renderTarget.querySelectorAll(selector) || [];
-            if (nodes.length === 1) return nodes[0];
-            else return Array.from(nodes);
-        }
-    };
+				attributeChangedCallback(
+					prop: string,
+					oldValue: string,
+					newValue: string
+				) {
+					// Call watcher function for changed attribute:
+					config.watch &&
+						config.watch[prop].call(
+							this,
+							castValue(
+								this,
+								prop,
+								newValue,
+								getTypeOfProp(prop)
+							) as string,
+							castValue(
+								this,
+								prop,
+								oldValue,
+								getTypeOfProp(prop)
+							) as string
+						);
+				}
 
-    // Add CSS to global DOM:
-    if (!config.shadow && config.css) {
-        const style = document.createElement("style");
-        style.textContent = config.css as string;
-        render(style, document.head);
-    }
+				$(selector: string) {
+					const nodes =
+						this.renderTarget.querySelectorAll(selector) || [];
+					if (nodes.length === 1) return nodes[0];
+					else return Array.from(nodes);
+				}
+			};
 
-    // Register element:
-    customElements.define(tagName, Component);
-}
+			// Add CSS to global DOM:
+			if (!config.shadow && config.css) {
+				const style = document.createElement("style");
+				style.textContent = config.css as string;
+				render(style, document.head);
+			}
+
+			// Register element:
+			customElements.define(tagName, Component);
+		}

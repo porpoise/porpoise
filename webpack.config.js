@@ -8,7 +8,7 @@ module.exports = {
         path: path.resolve(__dirname, "lib"),
         filename: "[name].js",
         libraryTarget: "global",
-        library: "WebElement",
+        library: "UIModel",
         umdNamedDefine: true,
     },
     resolve: {

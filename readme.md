@@ -1,4 +1,4 @@
-# WebElement
+# UIModel
 
 A light, Vue-inspired abstraction layer over custom elements.
 
@@ -6,7 +6,7 @@ A light, Vue-inspired abstraction layer over custom elements.
 
 ### Define:
 ```js
-import { construct, html } from "web-element";
+import { construct, html } from "porpoise";
 
 construct("say-hello", {
     render() {
