@@ -49,23 +49,17 @@ export function propProxy(element: HTMLElement, castedProps: Record<string, Cast
 
 /* Cast to required type: */
 export function castValue(element: HTMLElement, prop: string, value: string, type: CastableType): PropType | JSONPropType | undefined {
-    let returnValue: PropType | JSONPropType | undefined;
     switch (type) {
         case "string":
-            returnValue = value;
-            break;
+            return value;
         case "number": 
-            returnValue = Number(value);
-            break;
+            return Number(value);
         case "boolean":
-            returnValue = value === "true" ?
+            return value === "true" ?
                 true : false;
-            break;
         case "json":
-            returnValue = proxiedJSONProp(element, prop, value);
-            break;
+            return proxiedJSONProp(element, prop, value);
     }
-    return returnValue;
 }
 /* Serialize back to string */
 export function uncastValue(value: PropType | JSONPropType): string {
@@ -91,7 +85,6 @@ function nestedReactiveObject(data: JSONPropType, callback: Function): JSONPropT
         },
         set(target: any, prop: string, value: any) {
             target[prop] = value;
-            console.log(callback);
             callback();
             return true;
         }

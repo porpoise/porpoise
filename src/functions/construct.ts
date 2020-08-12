@@ -92,7 +92,6 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 
 		whenAttributeChanged(prop: string, newValue: string) {
 			if (dependencies[prop]) {
-				console.log(dependencies[prop]);
 				dependencies[prop].forEach(fn => fn());
 			}
 
