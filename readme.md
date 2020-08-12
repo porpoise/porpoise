@@ -7,71 +7,74 @@
 
 # The classic counter, in 5 steps:
 
-1. Initialize a component:
+1. Initialize a component with the template compiler:
 ```js
-import { construct, html } from "porpoise";
-construct("cool-counter", {});
+import { construct, compiler } from "porpoise";
+construct("cool-counter", {
+    compiler
+});
 ```
 
 2. Render the markup:
 ```js 
-import { construct, html } from "porpoise";
+import { construct, compiler } from "porpoise";
 construct("cool-counter", {
-    render() {
-        return html`
-            <h1>
-                Count:
-                <span />
-            </h1>
-            <button>Increase</button>
-            <button>Decrease</button>
-        `;
-    }
+    compiler,
+
+    template: `
+        <h1>
+            Count:
+            <span />
+        </h1>
+        <button>Increase</button>
+        <button>Decrease</button>
+    `,
 });
 ```
 
 3. Setup the `count` property:
 ```js 
-import { construct, html } from "porpoise";
+import { construct, compiler } from "porpoise";
 construct("cool-counter", {
-    render() {
-        return html`
-            <h1>
-                Count:
-                <span innerText=${() => this.props.count} />
-            </h1>
-            <button>Increase</button>
-            <button>Decrease</button>
-        `;
-    },
+    compiler,
 
-    castedProps: { count: "number" }
+    template: `
+        <h1>
+            Count:
+            <span :innerText="this.props.count" />
+        </h1>
+        <button>Increase</button>
+        <button>Decrease</button>
+    `,
+
+    castedProps: { count: "number" } // Auto-casts the attribute "count" to a number.
 });
 ```
 
 4. Create and bind event listeners:
 ```js
-import { construct, html } from "porpoise";
+import { construct, compiler } from "porpoise";
 construct("cool-counter", {
+    compiler,
+
+    template: `
+        <h1>
+            Count:
+            <span :innerText="this.props.count" />
+        </h1>
+        <button onClick="this.store.increase">Increase</button>
+        <button onClick="this.store.decrease">Decrease</button>
+    `,
+
+    castedProps: { count: "number" },
+
+    // The store holds component-specific data:
     store() {
         return {
             increase() { this.props.count++; },
             decrease() { this.props.count--; }
         }
     },
-
-    render() {
-        return html`
-            <h1>
-                Count:
-                <span innerText=${() => this.props.count} />
-            </h1>
-            <button onClick=${this.store.increase}>Increase</button>
-            <button onClick=${this.store.decrease}>Decrease</button>
-        `;
-    },
-
-    castedProps: { count: "number" }
 });
 ```
 

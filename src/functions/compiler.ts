@@ -21,8 +21,8 @@ const compilerFactory: TemplateCompilerFactory = (component, tagName, props, ...
         if (name.startsWith(":")) {
             compiledProps[name.replace(":", "")] = new Function(`return (${props[name]});`).bind(component);
         }
-        else if (name.startsWith("on")) {
-            compiledProps[name] = new Function(`return (${props[name]});`).call(component);
+        else if (name.startsWith("@")) {
+            compiledProps[name.replace("@", "on")] = new Function(`return (${props[name]});`).call(component);
         }
         else {
             compiledProps[name] = props[name];
