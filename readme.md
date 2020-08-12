@@ -3,7 +3,11 @@
 > ### A light, Vue-inspired abstraction layer over custom elements.
 
 # Install:
-`npm i porpoise`
+NPM (recommended, both global & ESM): `npm i porpoise`
+
+CDN:
+- Global (recommended): https://cdn.jsdelivr.net/npm/porpoise@latest/lib/index.js
+- ESM (only for in-browser testing): https://cdn.jsdelivr.net/npm/porpoise@latest/lib/esm/index.js
 
 # The classic counter, in 5 steps:
 
