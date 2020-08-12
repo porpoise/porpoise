@@ -1,6 +1,7 @@
 import { IPorpoiseConfig, ICustomElement } from "../internals/api.js";
 import { render } from "../functions/render.js";
 import { PropProxy, propProxy, castValue } from "../internals/prop-proxy.js";
+import { attributeObserver } from "../internals/attribute-observer.js";
 
 /* Construct a custom element: */
 export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>): void {
@@ -15,10 +16,6 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 		implements ICustomElement<Store> {
 		store?: Store;
 		props: PropProxy;
-
-		static get observedAttributes() {
-			return Object.keys(config.watch || Object.create(null));
-		}
 
 		get renderTarget() {
 			return config.shadow ? this.shadowRoot || this : this;
@@ -78,6 +75,9 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 		connectedCallback() {
 			// Call "mounted" lifecycle hook:
 			config.mounted && config.mounted.call(this);
+
+			// Setup attribute change watching:
+			attributeObserver(this, this.whenAttributeChanged.bind(this));
 		}
 
 		disconnectedCallback() {
@@ -90,28 +90,20 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 			config.adopted && config.adopted.call(this);
 		}
 
-		attributeChangedCallback(prop: string, oldValue: string, newValue: string) {
+		whenAttributeChanged(prop: string, newValue: string) {
 			if (dependencies[prop]) {
 				console.log(dependencies[prop]);
 				dependencies[prop].forEach(fn => fn());
-			} else {
-				console.log(dependencies);
 			}
 
 			// Call watcher function for changed attribute:
-			if (config.watch) {
+			if (config.watch && config.watch[prop]) {
 				config.watch[prop].call(
 					this,
 					castValue(
 						this,
 						prop,
 						newValue,
-						getTypeOfProp(prop)
-					) as string,
-					castValue(
-						this,
-						prop,
-						oldValue,
 						getTypeOfProp(prop)
 					) as string
 				);

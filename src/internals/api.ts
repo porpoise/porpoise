@@ -9,8 +9,7 @@ export interface ICustomElement<Store> extends HTMLElement {
 /* Type of a watcher function */
 export type WatcherCallback<Store> = (
 	this: ICustomElement<Store>,
-    newValue: (PropType | JSONPropType),
-    oldValue: (PropType | JSONPropType)
+    value: (PropType | JSONPropType)
 ) => void;
 
 /* Type of an event handler */
