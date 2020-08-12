@@ -29,7 +29,6 @@ const compilerFactory: TemplateCompilerFactory = (component, tagName, props, ...
         }
     }
 
-    console.log(compiledProps);
     return h(tagName, compiledProps, ...children);
 }
 
