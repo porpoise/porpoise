@@ -1,34 +1,18 @@
-import { RenderResult, render } from "./render.js";
+import { RenderResult, render, ValidParent } from "./render.js";
 import { propify } from "../internals/propify.js";
 
-type PropsType = Record<string, any> | null;
+type HProps = Record<string, any> | null;
 
-export function h(tagName: string, props: PropsType = null, ...children: RenderResult[]): RenderResult {
-    /* Document Fragment: */
-    if (tagName === "fragment") {
-        // Initialize fragment:
-        const fragment = document.createDocumentFragment();
+export function h(tagName: string, props: HProps = null, ...children: RenderResult[]): ValidParent {
+    // Create element:
+    const element = document.createElement(tagName);
 
-        // Append children, and return:
-        render(children, fragment);
-        return fragment;
+    // Add properties:
+    if (props) {
+        Object.keys(props).forEach(name => propify(element, name, props[name]));
     }
 
-    /* Standard Element: */
-    else {
-        // Create element:
-        const element = document.createElement(tagName);
-
-        // Add properties:
-        if (props) {
-            Object.keys(props).forEach(name => propify(element, name, props[name]));
-        }
-
-        // Append children, and return:
-        render(children, element);
-        return element;
-    }
+    // Append children, and return:
+    render(children, element);
+    return element;
 }
-
-import htm from "../internals/htm.js";
-export const html = htm.bind(h);

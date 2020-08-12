@@ -1,9 +1,10 @@
 import { RenderResult } from "../functions/render.js";
-import { CastableType, PropType, JSONPropType } from "./prop-proxy.js";
+import { CastableType, PropType, JSONPropType, PropProxy } from "./prop-proxy.js";
 
 export interface ICustomElement<Store> extends HTMLElement {
     $(selector: string): Element | Element[];
-    store?: Store
+	store?: Store,
+	props: PropProxy
 } 
 
 /* Type of a watcher function */
@@ -37,6 +38,10 @@ export interface IPorpoiseConfig<Store> {
 
 	/* Render function returns children */
 	render?(this: ICustomElement<Store>): RenderResult;
+
+	/* Template & compilation */
+	compiler?: (c: ICustomElement<any>) => (s: string[]) => RenderResult;
+	template?: string;
 
 	/* Event handlers */
 	events?: Record<string, EventHandler<Store>>;

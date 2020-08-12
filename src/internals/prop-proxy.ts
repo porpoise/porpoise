@@ -13,7 +13,7 @@ export type CastableType = "string" | "number" | "boolean" | "json";
 export type PropProxy = Record<string, PropType | JSONPropType | undefined>;
 
 /* Wrap around DOM attribute manipulation */
-export function propProxy(element: HTMLElement, castedProps: Record<string, CastableType>, dependencies: Record<string, Set<Function>>) {
+export function propProxy(element: HTMLElement, castedProps: Record<string, CastableType>, dependencies: Record<string, Set<Function>>): PropProxy {
 
     return new Proxy({}, {
         get(target, prop: string) {

@@ -58,8 +58,9 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 			config.shadow && this.attachShadow({ mode: "open" });
 
 			// Append children:
-			config.render &&
-				render(config.render.bind(this)(), this.renderTarget);
+			if (config.render) render(config.render.call(this), this.renderTarget);
+			else if (config.template && config.compiler)
+				render(config.compiler(this)([config.template]), this);
 
 			// If Shadow DOM, then apply CSS:
 			if (config.css && config.shadow) {

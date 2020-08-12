@@ -2,11 +2,14 @@
 import "./internals/es5-adapter.js";
 
 // Element Render functions:
-export * from "./functions/h.js";
-export * from "./functions/render.js";
+export { h } from "./functions/h.js";
+export { render } from "./functions/render.js";
 
 // The real deal (builds the components):
-export * from "./functions/construct.js";
+export { construct } from "./functions/construct.js";
 
 // Export types:
 export * from "./internals/api.js";
+
+// Template compiler
+export { compiler } from "./functions/compiler.js";

@@ -1,6 +1,6 @@
 /* Return type of render function (children) */
 export type RenderResult = any;
-export type ValidParent = DocumentFragment | HTMLElement | ShadowRoot;
+export type ValidParent = HTMLElement | ShadowRoot;
 
 export function render(child: RenderResult, parent: ValidParent) {
     // Recursive it
