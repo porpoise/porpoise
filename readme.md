@@ -1,6 +1,6 @@
-# Porpoise
+![Porpoise](./logo.png)
 
-A light, Vue-inspired abstraction layer over custom elements.
+> ### A light, Vue-inspired abstraction layer over custom elements.
 
 ## Example:
 
