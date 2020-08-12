@@ -7,7 +7,7 @@
 
 # The classic counter, in 5 steps:
 
-1. Initialize a component with the template compiler:
+### Initialize a component with the template compiler
 ```js
 import { construct, compiler } from "porpoise";
 construct("cool-counter", {
@@ -15,7 +15,7 @@ construct("cool-counter", {
 });
 ```
 
-2. Render the markup:
+### Render the markup:
 ```js 
 import { construct, compiler } from "porpoise";
 construct("cool-counter", {
@@ -32,7 +32,7 @@ construct("cool-counter", {
 });
 ```
 
-3. Setup the `count` property:
+### Setup the `count` property
 ```js 
 import { construct, compiler } from "porpoise";
 construct("cool-counter", {
@@ -51,7 +51,7 @@ construct("cool-counter", {
 });
 ```
 
-4. Create and bind event listeners:
+### Create and bind event listeners
 ```js
 import { construct, compiler } from "porpoise";
 construct("cool-counter", {
@@ -62,8 +62,8 @@ construct("cool-counter", {
             Count:
             <span :innerText="this.props.count" />
         </h1>
-        <button onClick="this.store.increase">Increase</button>
-        <button onClick="this.store.decrease">Decrease</button>
+        <button @click="this.store.increase">Increase</button>
+        <button @click="this.store.decrease">Decrease</button>
     `,
 
     castedProps: { count: "number" },
@@ -78,7 +78,7 @@ construct("cool-counter", {
 });
 ```
 
-5. Voila! Now you're ready to use your element!
+### Voila! Now you're ready to use your element!
 
 ```html
 <!-- In your HTML -->
