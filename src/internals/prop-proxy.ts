@@ -1,13 +1,28 @@
+import { getCurrentFunction } from "./effect.js";
+
+// Keep element data for prop binding:
+type ReactiveNodeDescriptor =
+    { element: HTMLElement, property: string } |
+    { textNode: Text } |
+    null;
+let currentNode: ReactiveNodeDescriptor = null;
+
 export type PropType = string | number | boolean;
 export type JSONPropType = Record<string, PropType> | PropType[];
 export type CastableType = "string" | "number" | "boolean" | "json";
-
 export type PropProxy = Record<string, PropType | JSONPropType | undefined>;
 
 /* Wrap around DOM attribute manipulation */
-export function propProxy(element: HTMLElement, castedProps: Record<string, CastableType>) {
+export function propProxy(element: HTMLElement, castedProps: Record<string, CastableType>, dependencies: Record<string, Set<Function>>) {
+
     return new Proxy({}, {
         get(target, prop: string) {
+            const currentFunction = getCurrentFunction();
+            if (currentFunction) {
+                dependencies[prop] = dependencies[prop] || new Set();
+                dependencies[prop].add(currentFunction);
+            }
+
             const rawValue = element.getAttribute(prop);
             // If attribute exists:
             if (rawValue !== null) {
