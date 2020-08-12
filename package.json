@@ -1,6 +1,6 @@
 {
     "name": "porpoise",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "A small, low-level abstraction layer over custom elements.",
     "main": "lib/index.min.js",
     "browser": "lib/index.min.js",
