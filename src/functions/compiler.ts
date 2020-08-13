@@ -18,12 +18,19 @@ const compilerFactory: TemplateCompilerFactory = (component, tagName, props, ...
     const compiledProps: Record<string, any> = Object.create(null);
 
     for (const name in props) {
+        // Reactive property:
         if (name.startsWith(":")) {
             compiledProps[name.replace(":", "")] = new Function(`return (${props[name]});`).bind(component);
         }
-        else if (name.startsWith("@")) {
-            compiledProps[name.replace("@", "on")] = new Function(`return (${props[name]});`).call(component);
+        // Static property:
+        else if (name.startsWith(";")) {
+            compiledProps[name.replace(";", "")] = new Function(`return (${props[name]});`).call(component);
         }
+        // Event handling:
+        else if (name.startsWith("@")) {
+            compiledProps[name] = new Function(`return (${props[name]});`).call(component);
+        }
+        // Normal string property:  
         else {
             compiledProps[name] = props[name];
         }

@@ -4,9 +4,9 @@ const domProps = ["innerHTML", "innerText", "textContent"]
 
 export function propify(element: HTMLElement, prop: string, value: any): void {
     // Event handlers:
-    if (prop.startsWith("on") && typeof value === "function") {
+    if (prop.startsWith("@") && typeof value === "function") {
         element.addEventListener(
-            prop.replace("on", "").toLowerCase(),
+            prop.replace("@", "").toLowerCase(),
             value
         );
     }
