@@ -60,7 +60,7 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 			// Append children:
 			if (config.render) render(config.render.call(this), this.renderTarget);
 			else if (config.template && config.compiler)
-				render(config.compiler(this)([config.template]), this);
+				render(config.compiler(this)([config.template]), this.renderTarget);
 
 			// If Shadow DOM, then apply CSS:
 			if (config.css && config.shadow) {

@@ -13,3 +13,6 @@ export * from "./internals/api.js";
 
 // Template compiler
 export { compiler } from "./functions/compiler.js";
+
+// Register components:
+import "./components/p-show.js";

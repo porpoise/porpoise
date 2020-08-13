@@ -1,4 +1,5 @@
 import { getCurrentFunction } from "./effect.js";
+import { kebabify } from "./kebabify.js";
 
 // Keep element data for prop binding:
 type ReactiveNodeDescriptor =
@@ -14,9 +15,10 @@ export type PropProxy = Record<string, PropType | JSONPropType | undefined>;
 
 /* Wrap around DOM attribute manipulation */
 export function propProxy(element: HTMLElement, castedProps: Record<string, CastableType>, dependencies: Record<string, Set<Function>>): PropProxy {
-
     return new Proxy({}, {
-        get(target, prop: string) {
+        get(target, rawProp: string) {
+            const prop = kebabify(rawProp);
+
             const currentFunction = getCurrentFunction();
             if (currentFunction) {
                 dependencies[prop] = dependencies[prop] || new Set();
@@ -35,7 +37,9 @@ export function propProxy(element: HTMLElement, castedProps: Record<string, Cast
             // Doesn't exist:
             else return undefined;
         },
-        set(target, prop: string, value: PropType | JSONPropType) {
+        set(target, rawProp: string, value: PropType | JSONPropType) {
+            const prop = kebabify(rawProp);
+
             if (castedProps[prop]) {
                 element.setAttribute(prop, uncastValue(value));
             }
