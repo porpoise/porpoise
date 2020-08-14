@@ -1,6 +1,22 @@
 ![Porpoise](./logo.png)
 
-> ### A light, Vue-inspired abstraction layer over custom elements.
+Porpoise is a lightweight, straightforward view-management library built on modern DOM APIs. 
+
+# Why Porpoise?
+
+- Straightforward:
+    - Built-in use in `.html` files (no HTML parsing, etc).
+    - As little abstraction as possible: Just DOM APIs, with a touch of reactivity.
+- Lightweight:
+    - Takes advantage of native, fast DOM APIs, no reinventing the wheel.
+        - **ES6 Proxies** for reactivity, which is faster and more user friendly than manually `get`/`set` handlers.
+        - **Custom Elements v1** to provide a full DOM element with built-in lifecycle hooks (no need to rewrite those either).
+    - **NO** Virtual DOM overhead. Porpoise stores update functions, which get triggered when a property is changed. There is no diffing or separate object tree involved.
+- Easy to learn:
+    - Get started with a simple CDN bundle and write your fast UIs in template backticks.
+
+    - Advanced users can take advantage of tree-shaking and JSX to boost performance even more.
+
 
 # Install:
 NPM (recommended, both global & ESM): `npm i porpoise`
