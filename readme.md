@@ -14,7 +14,6 @@ Porpoise is a lightweight, straightforward view-management library built on mode
     - **NO** Virtual DOM overhead. Porpoise stores update functions, which get triggered when a property is changed. There is no diffing or separate object tree involved.
 - Easy to learn:
     - Get started with a simple CDN bundle and write your fast UIs in template backticks.
-
     - Advanced users can take advantage of tree-shaking and JSX to boost performance even more.
 
 
