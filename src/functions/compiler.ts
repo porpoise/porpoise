@@ -1,7 +1,7 @@
 import { RenderResult, ValidParent } from "./render.js";
 import { ICustomElement } from "../internals/api.js";
 import { h } from "./h.js";
-import htm from "../internals/htm.js";
+import htmlParser from "../internals/html-parser.js";
 
 type TemplateFactory = (
     component: ICustomElement<any>,
@@ -35,7 +35,7 @@ const compilerFactory: TemplateFactory = (component, tagName, props, ...children
     return h(tagName, compiledProps, ...children);
 }
 
-export const compiler = (component: ICustomElement<any>) => htm.bind(
+export const compiler = (component: ICustomElement<any>) => htmlParser.bind(
     (
         tagName: string,
         props: Record<string, string>,
