@@ -45,7 +45,7 @@ construct("cool-counter", {
     template: `
         <h1>
             Count:
-            <span :innerText="this.props.count" />
+            <span :p-text="this.props.count" />
         </h1>
         <button>Increase</button>
         <button>Decrease</button>
@@ -64,7 +64,7 @@ construct("cool-counter", {
     template: `
         <h1>
             Count:
-            <span :innerText="this.props.count" />
+            <span :p-text="this.props.count" />
         </h1>
         <button @click="this.store.increase">Increase</button>
         <button @click="this.store.decrease">Decrease</button>

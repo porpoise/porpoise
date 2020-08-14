@@ -27,7 +27,7 @@ const compilerFactory: TemplateCompilerFactory = (component, tagName, props, ...
             compiledProps[name.replace(";", "")] = new Function(`return (${props[name]});`).call(component);
         }
         // Event handling:
-        else if (name.startsWith("@")) {
+        else if (name.startsWith("@") || name.startsWith("on")) {
             compiledProps[name] = new Function(`return (${props[name]});`).call(component);
         }
         // Normal string property:  
