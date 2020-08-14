@@ -1,20 +1,16 @@
-import { RenderResult, ValidParent } from "./render";
+import { RenderResult, ValidParent } from "./render.js";
 import { ICustomElement } from "../internals/api.js";
 import { h } from "./h.js";
 import htm from "../internals/htm.js";
 
-const input = /* html */`
-    <h1 :title="this.props.title"></h1>
-`;
-
-type TemplateCompilerFactory = (
+type TemplateFactory = (
     component: ICustomElement<any>,
     tagName: string,
     props: Record<string, string>,
     ...children: RenderResult[]
 ) => ValidParent;
 
-const compilerFactory: TemplateCompilerFactory = (component, tagName, props, ...children) => {
+const compilerFactory: TemplateFactory = (component, tagName, props, ...children) => {
     const compiledProps: Record<string, any> = Object.create(null);
 
     for (const name in props) {
