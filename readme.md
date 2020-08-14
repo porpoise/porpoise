@@ -1,6 +1,6 @@
 ![Porpoise](./logo.png)
 
-Porpoise is a lightweight, straightforward view-management library built on modern DOM APIs. 
+Lightning fast UIs on modern DOM APIs.
 
 # Why Porpoise?
 
