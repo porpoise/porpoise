@@ -1,29 +1,38 @@
 import { effect } from "./effect.js";
+import { uncastValue } from "./prop-proxy.js";
+import { kebabify } from "./kebabify.js";
 
-const domProps = ["innerHTML", "innerText", "textContent"]
+const isEventProp = (prop: string) => prop.startsWith("@") || prop.startsWith("on");
+const convertPropToEvent = (prop: string) => prop.replace("@", "").replace("on", "");
 
-export function propify(element: HTMLElement, prop: string, value: any): void {
+export function propify(element: HTMLElement, rawProp: string, value: any): void {
+    const prop = kebabify(rawProp).trim();
+
     // Event handlers:
-    if (prop.startsWith("@") && typeof value === "function") {
+    if (isEventProp(prop) && typeof value === "function") {
         element.addEventListener(
-            prop.replace("@", "").toLowerCase(),
+            convertPropToEvent(prop),
             value
         );
     }
         
     // Dynamic props:
-    else if (typeof value === "function") {
+    else if (!isEventProp(prop) && typeof value === "function") {
         effect(() => propify(element, prop, value(element)));
+    } 
+
+    // Inner text rendering:
+    else if (prop === "p-text") {
+        element.textContent = value;
     }
         
-    // Element dom properties:
-    else if (domProps.indexOf(prop) !== -1) {
-        //@ts-ignore
-        element[prop] = value;
+    // Unsafe innerHTML rendering:
+    else if (prop === "p-unsafe-html") {
+        element.innerHTML = value;
     }
 
     // Set as normal attribute:
     else {
-        element.setAttribute(prop, value);
+        element.setAttribute(prop, uncastValue(value));
     }
 }
