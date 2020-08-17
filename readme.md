@@ -1,6 +1,6 @@
 ![Porpoise](./logo.png)
 
-Lightning fast UIs on modern DOM APIs.
+### Lightning fast UIs on modern DOM APIs.
 
 # Why Porpoise?
 
