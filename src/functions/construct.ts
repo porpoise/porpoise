@@ -30,7 +30,7 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 			this.props = propProxy(this, config.castedProps || {}, dependencies);
 
 			// Call "created" lifecycle hook:
-			config.created && config.created.call(this);
+			config.beforeMounted && config.beforeMounted.call(this);
 
 			// Generate "store":
 			if (config.store) {
@@ -57,25 +57,27 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 
 			// Create shadow root if necessary:
 			config.shadow && this.attachShadow({ mode: "open" });
-
-			// If Shadow DOM, then apply CSS:
-			if (config.css && config.shadow) {
-				const style = document.createElement("style");
-				style.textContent =
-					typeof config.css === "string"
-						? config.css
-						: config.css.call(this);
-				render(style, this.renderTarget);
-			}
 		}
 
 		connectedCallback() {
-			// On first render: append children:
+			// On first render: 
 			if (this["[[firstRender]]"]) {
 				this["[[firstRender]]"] = false;
+
+				// append children:
 				if (config.render) render(config.render.call(this), this.renderTarget);
 				else if (config.template && config.compiler)
 					render(config.compiler(this)([config.template]), this.renderTarget);
+				
+				// If Shadow DOM, then apply CSS:
+				if (config.css && config.shadow) {
+					const style = document.createElement("style");
+					style.textContent =
+						typeof config.css === "string"
+							? config.css
+							: config.css.call(this);
+					render(style, this.renderTarget);
+				}
 			}
 
 			// Call "mounted" lifecycle hook:
