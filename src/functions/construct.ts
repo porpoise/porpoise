@@ -16,6 +16,7 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 		implements ICustomElement<Store> {
 		store?: Store;
 		props: PropProxy;
+		"[[firstRender]]": boolean = true;
 
 		get renderTarget() {
 			return config.shadow ? this.shadowRoot || this : this;
@@ -57,11 +58,6 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 			// Create shadow root if necessary:
 			config.shadow && this.attachShadow({ mode: "open" });
 
-			// Append children:
-			if (config.render) render(config.render.call(this), this.renderTarget);
-			else if (config.template && config.compiler)
-				render(config.compiler(this)([config.template]), this.renderTarget);
-
 			// If Shadow DOM, then apply CSS:
 			if (config.css && config.shadow) {
 				const style = document.createElement("style");
@@ -74,6 +70,14 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 		}
 
 		connectedCallback() {
+			// On first render: append children:
+			if (this["[[firstRender]]"]) {
+				this["[[firstRender]]"] = false;
+				if (config.render) render(config.render.call(this), this.renderTarget);
+				else if (config.template && config.compiler)
+					render(config.compiler(this)([config.template]), this.renderTarget);
+			}
+
 			// Call "mounted" lifecycle hook:
 			config.mounted && config.mounted.call(this);
 
