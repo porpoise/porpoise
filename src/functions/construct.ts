@@ -29,9 +29,6 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 			// Attribute proxier:
 			this.props = propProxy(this, config.castedProps || {}, dependencies);
 
-			// Call "created" lifecycle hook:
-			config.beforeMounted && config.beforeMounted.call(this);
-
 			// Generate "store":
 			if (config.store) {
 				const unboundStore = config.store.call(this);
@@ -57,6 +54,9 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 
 			// Create shadow root if necessary:
 			config.shadow && this.attachShadow({ mode: "open" });
+
+			// Call "created" lifecycle hook:
+			config.beforeMounted && config.beforeMounted.call(this);
 		}
 
 		connectedCallback() {
