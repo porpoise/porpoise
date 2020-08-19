@@ -15,6 +15,8 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 	const Component = class extends HTMLElement
 		implements ICustomElement<Store> {
 		store?: Store;
+
+		//@ts-ignore
 		props: PropProxy;
 		"[[firstRender]]": boolean = true;
 
@@ -26,35 +28,6 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 			// Required super call.
 			super();
 
-			// Attribute proxier:
-			this.props = propProxy(this, config.castedProps || {}, dependencies);
-
-			// Generate "store":
-			if (config.store) {
-				const unboundStore = config.store.call(this);
-				for (const prop in unboundStore) {
-					if (typeof unboundStore[prop] === "function") {
-						unboundStore[prop] = ((unboundStore[
-							prop
-						] as unknown) as Function).bind(this);
-					}
-				}
-				this.store = unboundStore;
-			}
-
-			// Register event handlers:
-			if (config.events) {
-				for (const eventName in config.events) {
-					this.addEventListener(
-						eventName,
-						config.events[eventName].bind(this)
-					);
-				}
-			}
-
-			// Create shadow root if necessary:
-			config.shadow && this.attachShadow({ mode: "open" });
-
 			// Call "created" lifecycle hook:
 			config.beforeMounted && config.beforeMounted.call(this);
 		}
@@ -63,6 +36,35 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 			// On first render: 
 			if (this["[[firstRender]]"]) {
 				this["[[firstRender]]"] = false;
+
+				// Attribute proxier:
+				this.props = propProxy(this, config.castedProps || {}, dependencies);
+
+				// Generate "store":
+				if (config.store) {
+					const unboundStore = config.store.call(this);
+					for (const prop in unboundStore) {
+						if (typeof unboundStore[prop] === "function") {
+							unboundStore[prop] = ((unboundStore[
+								prop
+							] as unknown) as Function).bind(this);
+						}
+					}
+					this.store = unboundStore;
+				}
+
+				// Register event handlers:
+				if (config.events) {
+					for (const eventName in config.events) {
+						this.addEventListener(
+							eventName,
+							config.events[eventName].bind(this)
+						);
+					}
+				}
+
+				// Create shadow root if necessary:
+				config.shadow && this.attachShadow({ mode: "open" });
 
 				// append children:
 				if (config.render) render(config.render.call(this), this.renderTarget);
