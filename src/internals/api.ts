@@ -22,7 +22,7 @@ export type EventHandler<Store, EventType extends Event = Event> = (
 /* Main configuration object */
 export interface IPorpoiseConfig<Store> {
 	/* Store */
-	store?: (this: ICustomElement<{}>) => Store;
+	store?: (this: ICustomElement<Store>) => Store;
 
 	/* Cast properties */
 	castedProps?: Record<string, CastableType>;
