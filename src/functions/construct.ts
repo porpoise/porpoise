@@ -8,8 +8,6 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 	const getTypeOfProp = (p: string) =>
 		(config.castedProps ? config.castedProps[p] : "string") ||
 		"string";
-	
-	const dependencies: Record<string, Set<Function>> = Object.create(null);
 
 	// Component Class
 	const Component = class extends HTMLElement
@@ -18,7 +16,10 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 
 		//@ts-ignore
 		props: PropProxy;
+
+		// Private properties:
 		"[[firstRender]]": boolean = true;
+		"[[dependencies]]": Record<string, Set<Function>> = Object.create(null);
 
 		get renderTarget() {
 			return config.shadow ? this.shadowRoot || this : this;
@@ -38,7 +39,7 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 				this["[[firstRender]]"] = false;
 
 				// Attribute proxier:
-				this.props = propProxy(this, config.castedProps || {}, dependencies);
+				this.props = propProxy(this, config.castedProps || {}, this["[[dependencies]]"]);
 
 				// Generate "store":
 				if (config.store) {
@@ -100,8 +101,8 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 		}
 
 		whenAttributeChanged(prop: string, newValue: string) {
-			if (dependencies[prop]) {
-				dependencies[prop].forEach(fn => fn());
+			if (this["[[dependencies]]"][prop]) {
+				this["[[dependencies]]"][prop].forEach(fn => fn());
 			}
 
 			// Call watcher function for changed attribute:
