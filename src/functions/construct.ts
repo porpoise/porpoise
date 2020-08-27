@@ -2,7 +2,7 @@ import { IPorpoiseConfig, ICustomElement } from "../internals/api.js";
 import { render } from "../functions/render.js";
 import { PropProxy, propProxy, castValue } from "../internals/prop-proxy.js";
 import { attributeObserver } from "../internals/attribute-observer.js";
-import { getPropType } from "src/internals/getPropType.js";
+import { getPropType } from "../internals/get-prop-type.js";
 
 /* Construct a custom element: */
 export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>): void {
@@ -20,7 +20,7 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 		"[[firstRender]]": boolean = true;
 		"[[dependencies]]": Record<string, Set<Function>> = Object.create(null);
 
-		get renderTarget() {
+		get "[[renderTarget]]"() {
 			return config.shadow ? this.shadowRoot || this : this;
 		}
 
@@ -67,9 +67,9 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 				config.shadow && this.attachShadow({ mode: "open" });
 
 				// append children:
-				if (config.render) render(config.render.call(this), this.renderTarget);
+				if (config.render) render(config.render.call(this), this["[[renderTarget]]"]);
 				else if (config.template && config.compiler)
-					render(config.compiler(this)([config.template]), this.renderTarget);
+					render(config.compiler(this)([config.template]), this["[[renderTarget]]"]);
 				
 				// If Shadow DOM, then apply CSS:
 				if (config.css && config.shadow) {
@@ -78,7 +78,7 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 						typeof config.css === "string"
 							? config.css
 							: config.css.call(this);
-					render(style, this.renderTarget);
+					render(style, this["[[renderTarget]]"]);
 				}
 			}
 
@@ -116,13 +116,6 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 					) as string
 				);
 			}
-		}
-
-		$(selector: string) {
-			const nodes =
-				this.renderTarget.querySelectorAll(selector) || [];
-			if (nodes.length === 1) return nodes[0];
-			else return Array.from(nodes);
 		}
 	};
 

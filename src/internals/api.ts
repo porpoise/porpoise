@@ -2,7 +2,6 @@ import { RenderResult } from "../functions/render.js";
 import { CastableType, PropType, JSONPropType, PropProxy } from "./prop-proxy.js";
 
 export interface ICustomElement<Store> extends HTMLElement {
-    $(selector: string): Element | Element[];
 	store?: Store,
 	props: PropProxy
 } 
