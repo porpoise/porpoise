@@ -2,12 +2,11 @@ import { IPorpoiseConfig, ICustomElement } from "../internals/api.js";
 import { render } from "../functions/render.js";
 import { PropProxy, propProxy, castValue } from "../internals/prop-proxy.js";
 import { attributeObserver } from "../internals/attribute-observer.js";
+import { getPropType } from "src/internals/getPropType.js";
 
 /* Construct a custom element: */
 export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>): void {
-	const getTypeOfProp = (p: string) =>
-		(config.castedProps ? config.castedProps[p] : "string") ||
-		"string";
+
 
 	// Component Class
 	const Component = class extends HTMLElement
@@ -30,7 +29,7 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 			super();
 
 			// Call "created" lifecycle hook:
-			config.beforeMounted && config.beforeMounted.call(this);
+			config.premount && config.premount.call(this);
 		}
 
 		connectedCallback() {
@@ -113,7 +112,7 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 						this,
 						prop,
 						newValue,
-						getTypeOfProp(prop)
+						getPropType(prop, config)
 					) as string
 				);
 			}

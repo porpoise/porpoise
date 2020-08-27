@@ -28,7 +28,7 @@ export interface IPorpoiseConfig<Store> {
 	castedProps?: Record<string, CastableType>;
 
 	/* Lifecycle hooks */
-	beforeMounted?(this: ICustomElement<Store>): void; // Called in "constructor" right after "super()".
+	premount?(this: ICustomElement<Store>): void; // Called in "constructor" right after "super()".
 	mounted?(this: ICustomElement<Store>): void; // Called in "connectedCallback".
 	removed?(this: ICustomElement<Store>): void; // Called in "disconnectedCallback".
 	adopted?(this: ICustomElement<Store>): void; // Called in "adoptedCallback".
