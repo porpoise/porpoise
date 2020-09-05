@@ -1,6 +1,6 @@
 {
     "name": "porpoise",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "description": "Lightning fast UIs on modern DOM APIs.",
     "main": "lib/index.min.js",
     "browser": "lib/index.min.js",
