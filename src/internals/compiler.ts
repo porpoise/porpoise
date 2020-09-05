@@ -1,7 +1,7 @@
-import { RenderResult, ValidParent } from "./render.js";
-import { ICustomElement } from "../internals/api.js";
-import { h } from "./h.js";
-import htmlParser from "../internals/html-parser.js";
+import { RenderResult, ValidParent } from "../functions/render.js";
+import { ICustomElement } from "./api.js";
+import { h } from "../functions/h.js";
+import htmlParser from "./html-parser.js";
 
 type TemplateFactory = (
     component: ICustomElement<any>,

@@ -11,8 +11,5 @@ export { construct } from "./functions/construct.js";
 // Export types:
 export * from "./internals/api.js";
 
-// Template compiler
-export { compiler } from "./functions/compiler.js";
-
 // Register components:
 import "./components/p-show.js";

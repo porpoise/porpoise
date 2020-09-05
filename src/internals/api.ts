@@ -39,7 +39,6 @@ export interface IPorpoiseConfig<Store> {
 	render?(this: ICustomElement<Store>): RenderResult;
 
 	/* Template & compilation */
-	compiler?: (c: ICustomElement<any>) => (s: string[]) => RenderResult;
 	template?: string;
 
 	/* Event handlers */

@@ -3,6 +3,7 @@ import { render } from "../functions/render.js";
 import { PropProxy, propProxy, castValue } from "../internals/prop-proxy.js";
 import { attributeObserver } from "../internals/attribute-observer.js";
 import { getPropType } from "../internals/get-prop-type.js";
+import { compiler } from "../internals/compiler.js";
 
 /* Construct a custom element: */
 export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>): void {
@@ -68,8 +69,8 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 
 				// append children:
 				if (config.render) render(config.render.call(this), this["[[renderTarget]]"]);
-				else if (config.template && config.compiler)
-					render(config.compiler(this)([config.template]), this["[[renderTarget]]"]);
+				else if (config.template)
+					render(compiler(this)([config.template]), this["[[renderTarget]]"]);
 				
 				// If Shadow DOM, then apply CSS:
 				if (config.css && config.shadow) {
