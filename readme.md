@@ -30,17 +30,15 @@ CDN:
 
 ### Initialize a component with the template compiler
 ```js
-import { construct, compiler } from "porpoise";
+import { construct } from "porpoise";
 construct("cool-counter", {
-    compiler
 });
 ```
 
 ### Render the markup:
 ```js 
-import { construct, compiler } from "porpoise";
+import { construct } from "porpoise";
 construct("cool-counter", {
-    compiler,
 
     template: `
         <h1>
@@ -55,10 +53,8 @@ construct("cool-counter", {
 
 ### Setup the `count` property
 ```js 
-import { construct, compiler } from "porpoise";
+import { construct } from "porpoise";
 construct("cool-counter", {
-    compiler,
-
     template: `
         <h1>
             Count:
@@ -74,10 +70,8 @@ construct("cool-counter", {
 
 ### Create and bind event listeners
 ```js
-import { construct, compiler } from "porpoise";
+import { construct } from "porpoise";
 construct("cool-counter", {
-    compiler,
-
     template: `
         <h1>
             Count:
