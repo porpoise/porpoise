@@ -4,11 +4,10 @@ import { PropProxy, propProxy, castValue } from "../internals/prop-proxy.js";
 import { attributeObserver } from "../internals/attribute-observer.js";
 import { getPropType } from "../internals/get-prop-type.js";
 import { compiler } from "../internals/compiler.js";
+import { globals } from "../functions/globalize.js";
 
 /* Construct a custom element: */
 export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>): void {
-
-
 	// Component Class
 	const Component = class extends HTMLElement
 		implements ICustomElement<Store> {
@@ -24,6 +23,8 @@ export function construct<Store>(tagName: string, config: IPorpoiseConfig<Store>
 		get "[[renderTarget]]"() {
 			return config.shadow ? this.shadowRoot || this : this;
 		}
+
+		get $globals() { return globals; }
 
 		constructor() {
 			// Required super call.

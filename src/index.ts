@@ -3,7 +3,9 @@ import "./internals/es5-adapter.js";
 
 // Element Render functions:
 export { h } from "./functions/h.js";
-export { render } from "./functions/render.js";
+
+// Register plugins:
+export { globalize } from "./functions/globalize.js";
 
 // The real deal (builds the components):
 export { construct } from "./functions/construct.js";
